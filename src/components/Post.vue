@@ -4,9 +4,9 @@
             <div class="profile"></div>
             <span class="profile-name">{{ Data.name }}</span>
         </div>
-        <div class="post-body" :style="{backgroundImage : `url(${Data.postImage})`}"></div>
+        <div @click="$store.commit('좋아요증가')" :class="Data.filter" class="post-body" :style="{backgroundImage : `url(${Data.postImage})`}"></div>
         <div class="post-content">
-            <p>{{ Data.likes }}</p>
+            <p>{{ $store.state.likes }} Likes</p>
             <p><strong>{{ Data.name }}</strong> {{ Data.content }}</p>
             <p class="date">May 15</p>
         </div>
@@ -18,7 +18,7 @@ export default {
     name : 'Post',
     props : {
         Data : Object,
-    }
+    },
 }
 </script>
 

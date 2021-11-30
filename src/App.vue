@@ -9,9 +9,21 @@
       </ul>
     </div>
 
+    <!-- <p>{{name}} {{age}} {{likes}}</p>
+    <p>{{내이름}}</p>
+
+    <h4>안녕 {{ $store.state.name }}</h4>
+    <h4>나는 {{ $store.state.age }}</h4>
+    <button @click="$store.commit('이름변경')">버튼</button>
+    <button @click="나이변경(10)">나이변경버튼</button> -->
+
+    <p>{{ $store.state.more }}</p>
+    <button @click="$store.dispatch('getData')">더보기버튼</button>
+
     <Container @write="작성한글 = $event" :Data="Data" :step="step" :이미지="이미지" />
 
     <button @click="more">더보기</button>
+
     <!-- <div v-if="step == 0">내용0</div>
     <div v-if="step == 1">내용1</div>
     <div v-if="step == 2">내용2</div>
@@ -34,21 +46,42 @@
 import Container from './components/Container';
 import Data from './assets/data.js';
 import axios from 'axios';
+import {mapState, mapMutations} from 'vuex'
 
 export default {
+
   name: 'App',
   data(){
     return {
-      step : 0,
+      step : 3,
       Data : Data,
       이미지 : '',
       작성한글 : '',
+      선택한필터 : '',
+      카운터 : 0,
       }
   },
+  mounted(){
+    this.emitter.on('박스클릭함', (a) => {
+      console.log("선택한필터 : " + a);
+      this.선택한필터 = a
+    })
+  },
+
   components: {
     Container : Container,
   },
+
+  computed : {
+    name(){
+      return this.$store.state.name
+    },
+    ...mapState(['name','age','likes']),
+    ...mapState({ 내이름 : 'name', })
+  },
   methods : {
+    ...mapMutations(['setMore','좋아요증가','나이변경']),
+
     more(){
 
       // axios.post('URL',{name : 'kim'}).then().catch((err)=>{
@@ -70,20 +103,20 @@ export default {
     this.이미지 = url;
     this.step++;
   },
-  publish(){
-    var 내게시물 =     {
-        name: "Kim Hyun",
-        userImage: "https://placeimg.com/100/100/arch",
-        postImage: this.이미지,
-        likes: 36,
-        date: "May 15",
-        liked: false,
-        content: this.작성한글,
-        filter: "perpetua"
-    };
-    this.Data.unshift(내게시물);
-    this.step = 0;
-  }
+    publish(){
+      var 내게시물 =  {
+          name: "Kim Hyun",
+          userImage: "https://placeimg.com/100/100/arch",
+          postImage: this.이미지,
+          likes: 36,
+          date: "May 15",
+          liked: false,
+          content: this.작성한글,
+          filter: this.선택한필터
+      };
+      this.Data.unshift(내게시물);
+      this.step = 0;
+    }
   }
 }
 </script>
